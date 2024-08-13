@@ -39,7 +39,7 @@ public class App
     private static final int millisRelayOpen = ApplicationProperties.INSTANCE.millisRelayOpen();
     private static final int room_id = Integer.parseInt(ApplicationProperties.INSTANCE.getRoomId());
     private static final String baseAPIurl = ApplicationProperties.INSTANCE.getbaseAPIUrl();
-  
+    private static final String TOKEN= ApplicationProperties.INSTANCE.getToken();
 
     public static void main(String args[]) throws Exception {
         IPConnection ipcon = new IPConnection(); // Create IP connection
@@ -71,7 +71,7 @@ public class App
                        
                         System.out.format("Used tag of type %d with ID [%s]\n", ret.tagType, tag);
                        
-                        found = checkAuth(tag.toString(),room_id,  "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcyMzQ2OTE4MSwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzIzMzgyNzgxfQ.HCgWsR5EmatVVyts-stepyaIgAvIHnIq5TzTKYDKBExHgKGOfR1bQCrJbBq9iBYFk7lVP8Z3mCA9zl5WTm1anQ");
+                        found = checkAuth(tag.toString(), room_id,  TOKEN);
                         
                         if(found) {
                         	iqr.setValue(new boolean[]{true, true, true, true});

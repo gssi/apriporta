@@ -43,6 +43,9 @@ public enum ApplicationProperties {
     public String getbaseAPIUrl() {
         return properties.getProperty("app.baseAPIurl");
     }
+    public String getToken() {
+        return properties.getProperty("app.token");
+    }
     
 }
 
