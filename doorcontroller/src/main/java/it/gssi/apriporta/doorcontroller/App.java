@@ -1,57 +1,59 @@
 package it.gssi.apriporta.doorcontroller;
 
-import com.tinkerforge.IPConnection;
-import com.tinkerforge.BrickletGPS.DateTime;
+import static io.restassured.RestAssured.given;
 
-import groovyjarjarantlr4.v4.parse.ANTLRParser.finallyClause_return;
-
-import com.tinkerforge.BrickletNFC;
-import com.tinkerforge.BrickletPiezoSpeakerV2;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.chrono.ChronoLocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Properties;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
+import org.apache.groovy.parser.antlr4.GroovyParser.ThisFormalParameterContext;
 
+import com.tinkerforge.BrickletIndustrialQuadRelayV2;
+import com.tinkerforge.BrickletLCD128x64;
+import com.tinkerforge.BrickletNFC;
+import com.tinkerforge.BrickletPiezoSpeakerV2;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.TinkerforgeException;
+
+import groovyjarjarantlr4.v4.parse.ANTLRParser.finallyClause_return;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-
 
 public class App 
 {
-	private static final String HOST = "192.168.1.126";
+	private static final String HOST = ApplicationProperties.INSTANCE.getHost();
     private static final int PORT = 4223;
     static boolean found;
-    // Change XYZ to the UID of your NFC Bricklet
-    private static final String UID = "LB1";
-    private static final String speakerUID = "KAt";
-    private static final int room_id = 1500;
-    // Note: To make the example code cleaner we do not handle exceptions. Exceptions
-    //       you might normally want to catch are described in the documentation
+    private final static Properties properties = new Properties();
+
+    private static final String NFCUID = ApplicationProperties.INSTANCE.getNFCUid();
+    private static final String speakerUID = ApplicationProperties.INSTANCE.speakerUID();
+    private static final String relayUID = ApplicationProperties.INSTANCE.relayUID();
+    private static final String lcdUID = ApplicationProperties.INSTANCE.lcdUID();
+
+    private static final int millisRelayOpen = ApplicationProperties.INSTANCE.millisRelayOpen();
+    private static final int room_id = Integer.parseInt(ApplicationProperties.INSTANCE.getRoomId());
+    private static final String baseAPIurl = ApplicationProperties.INSTANCE.getbaseAPIUrl();
+  
+
     public static void main(String args[]) throws Exception {
         IPConnection ipcon = new IPConnection(); // Create IP connection
         // Note: Declare nfc as final, so the listener can access it
-        final BrickletNFC nfc = new BrickletNFC(UID, ipcon); // Create device object
+        final BrickletNFC nfc = new BrickletNFC(NFCUID, ipcon); // Create device object
         final BrickletPiezoSpeakerV2 ps = new BrickletPiezoSpeakerV2(speakerUID, ipcon); // Create device object
-		
+        final BrickletIndustrialQuadRelayV2 iqr =
+                new BrickletIndustrialQuadRelayV2(relayUID, ipcon); 
+        
+        final BrickletLCD128x64 lcd= new BrickletLCD128x64(lcdUID, ipcon); // Create device object
+
         ipcon.connect(HOST, PORT); // Connect to brickd
         // Don't use device before ipcon is connected
-
+        displayDesign(lcd,iqr);
         // Add reader state changed listener
         nfc.addReaderStateChangedListener(new BrickletNFC.ReaderStateChangedListener() {
             public void readerStateChanged(int state, boolean idle) {
@@ -72,11 +74,21 @@ public class App
                         found = checkAuth(tag.toString(),room_id,  "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcyMzQ2OTE4MSwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzIzMzgyNzgxfQ.HCgWsR5EmatVVyts-stepyaIgAvIHnIq5TzTKYDKBExHgKGOfR1bQCrJbBq9iBYFk7lVP8Z3mCA9zl5WTm1anQ");
                         
                         if(found) {
+                        	iqr.setValue(new boolean[]{true, true, true, true});
                         	
+                            Thread.sleep(millisRelayOpen);
+                            
+                            iqr.setValue(new boolean[]{false, false, false, false});
+                            
                         	ps.setBeep(3200, 0, 500);
-                        
+                        	//lcd.clearDisplay();
+                        	displayDesign(lcd,iqr);
+                        	
                         }else {
-                        	ps.setBeep(100, 0, 500);	
+                        	ps.setBeep(100, 0, 500);
+                        	lcd.clearDisplay();
+                        	lcd.writeLine(5, 0, tag.toString());
+                        	
                         }
                         Thread.sleep(1000);
                     }
@@ -98,7 +110,7 @@ public class App
 			private boolean checkAuth(String tag, int room_id, String token) {
 				// TODO Auto-generated method stub
 				 // Set the base URI, using JSONPlaceholder as an example
-		        RestAssured.baseURI = "http://192.168.1.119:8080/api/tags/bycode/";
+		        RestAssured.baseURI = baseAPIurl+"/api/tags/bycode/";
 		        // Send a GET request and save the response
 		        Response response = given()
 		        		.header("Authorization", "Bearer " + token)
@@ -108,9 +120,7 @@ public class App
 		                .extract()
 		                .response();
 		      
-		        // Print the JSON content of the response
-		        //System.out.println("Response JSON: " + response.asString()); // Verify that the status code is 200.
-		        // Validate that the status code is 200
+		       // Validate that the status code is 200
 		       int statusCode = response.getStatusCode();
 		      
 		       if(statusCode==200) {
@@ -121,7 +131,7 @@ public class App
 		    		int user_id = jsonPathEvaluator.get("id");
 		    	 
 		    	   
-		    	   RestAssured.baseURI = "http://192.168.1.119:8080/api/access-rules?eagerload=true";
+		    	   RestAssured.baseURI = baseAPIurl+"/api/access-rules?eagerload=true";
 			        // Send a GET request and save the response
 			        Response response2 = given()
 			        		.header("Authorization", "Bearer " + token)
@@ -144,10 +154,9 @@ public class App
 			        	
 			        	  while(iterator.hasNext()) {
 			        		  Date d= sdf.parse(iterator.next().toString());
+			        		  //active dates retrieved
 			        		  if(d.after(new Date()))return true;
 			        	  }
-			        	  
-			        	
 			        }
 		    	   }catch(Exception e) {
 		    		   e.printStackTrace();
@@ -156,9 +165,8 @@ public class App
 		    	   return false;
 		       }
 		      
-		        //response.then().statusCode(200); // validate that the response has a status code of 200.
-		        // Validate a specific field value in the response
-		        return false;
+		   
+		   return false;
 			}
 
 			
@@ -168,7 +176,54 @@ public class App
         // Enable reader mode
         nfc.setMode(BrickletNFC.MODE_READER);
 
+
+        
         System.out.println("Press key to exit"); System.in.read();
         ipcon.disconnect();
+    }
+    
+    public static void displayDesign(BrickletLCD128x64 lcd, BrickletIndustrialQuadRelayV2 iqr ) throws TinkerforgeException, IOException {
+    	// Add GUI button pressed listener
+    	
+        lcd.addGUIButtonPressedListener(new BrickletLCD128x64.GUIButtonPressedListener() {
+            public void guiButtonPressed(int index, boolean pressed) {
+                if(pressed) openDoor(iqr); 
+            }
+
+			private void openDoor(BrickletIndustrialQuadRelayV2 iqr) {
+				// TODO Auto-generated method stub
+				try {
+					iqr.setValue(new boolean[]{true, true, true, true});
+				
+            	
+                Thread.sleep(millisRelayOpen);
+                
+                iqr.setValue(new boolean[]{false, false, false, false});
+				} catch (TinkerforgeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+        });
+
+        
+
+       
+
+        // Clear display
+        lcd.clearDisplay();
+        lcd.removeAllGUI();
+
+        // Add GUI elements: Button, Slider and Graph with 60 data points
+        lcd.setGUIButton(0, 0, 0, 60, 20, "Open");
+        
+
+        // Set period for GUI button pressed callback to 0.1s (100ms)
+        lcd.setGUIButtonPressedCallbackConfiguration(100, true);
+
+       
     }
 }
