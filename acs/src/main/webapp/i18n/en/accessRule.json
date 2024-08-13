@@ -1,0 +1,28 @@
+{
+  "acsApp": {
+    "accessRule": {
+      "home": {
+        "title": "Access Rules",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Access Rule",
+        "createOrEditLabel": "Create or edit a Access Rule",
+        "notFound": "No Access Rules found"
+      },
+      "created": "A new Access Rule is created with identifier {{ param }}",
+      "updated": "A Access Rule is updated with identifier {{ param }}",
+      "deleted": "A Access Rule is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Access Rule {{ id }}?"
+      },
+      "detail": {
+        "title": "Access Rule"
+      },
+      "id": "ID",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "notes": "Notes",
+      "employee": "Employee",
+      "room": "Room"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "annotations": {
+    "changelogDate": "20240808132841"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "roomName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "uid",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Room",
+  "relationships": [
+    {
+      "otherEntityName": "accessRule",
+      "otherEntityRelationshipName": "room",
+      "relationshipName": "rule",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}

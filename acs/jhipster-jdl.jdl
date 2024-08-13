@@ -1,0 +1,49 @@
+
+/**
+ * The Employee entity.
+ */
+ 
+ entity AccessRule{
+	startDate Instant
+	endDate Instant
+    notes String
+}
+
+entity Employee {
+	/**
+	* The firstname attribute.
+	*/
+	firstName String
+	lastName String
+	email String
+}
+
+entity Room{
+	roomName String
+    uid String
+}
+
+entity Tag{
+	code String
+
+}
+
+relationship OneToMany{
+	Employee{rule} to AccessRule{employee(email)}
+	
+}
+
+relationship OneToMany{
+
+Room{rule} to AccessRule{room(roomName)}
+Employee{tag(code)} to Tag{employee(email)}
+}
+
+
+
+
+
+
+
+// Set an angular suffix
+// angularSuffix * with mySuffix

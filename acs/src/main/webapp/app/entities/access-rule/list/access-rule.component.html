@@ -1,0 +1,128 @@
+<div>
+  <h2 id="page-heading" data-cy="AccessRuleHeading">
+    <span jhiTranslate="acsApp.accessRule.home.title">Access Rules</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="acsApp.accessRule.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-access-rule"
+        [routerLink]="['/access-rule/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="acsApp.accessRule.home.createLabel">Create a new Access Rule</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (accessRules?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="acsApp.accessRule.home.notFound">No Access Rules found</span>
+    </div>
+  }
+
+  @if (accessRules && accessRules.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startDate">
+              <div class="d-flex">
+                <span jhiTranslate="acsApp.accessRule.startDate">Start Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="endDate">
+              <div class="d-flex">
+                <span jhiTranslate="acsApp.accessRule.endDate">End Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="notes">
+              <div class="d-flex">
+                <span jhiTranslate="acsApp.accessRule.notes">Notes</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="employee.email">
+              <div class="d-flex">
+                <span jhiTranslate="acsApp.accessRule.employee">Employee</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="room.roomName">
+              <div class="d-flex">
+                <span jhiTranslate="acsApp.accessRule.room">Room</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (accessRule of accessRules; track trackId) {
+            <tr data-cy="entityTable" >
+              <td>
+                <a [routerLink]="['/access-rule', accessRule.id, 'view']">{{ accessRule.id }}</a>
+              </td>
+              <td>{{ accessRule.startDate | formatMediumDatetime }}</td>
+              <td>{{ accessRule.endDate | formatMediumDatetime }}</td>
+              <td>{{ accessRule.notes }}</td>
+              <td>
+                @if (accessRule.employee) {
+                  <div>
+                    <a [routerLink]="['/employee', accessRule.employee.id, 'view']">{{ accessRule.employee.email }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (accessRule.room) {
+                  <div>
+                    <a [routerLink]="['/room', accessRule.room.id, 'view']">{{ accessRule.room.roomName }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/access-rule', accessRule.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/access-rule', accessRule.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(accessRule)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

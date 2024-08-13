@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (accessRule()) {
+      <div>
+        <h2 data-cy="accessRuleDetailsHeading"><span jhiTranslate="acsApp.accessRule.detail.title">Access Rule</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ accessRule()!.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="acsApp.accessRule.startDate">Start Date</span></dt>
+          <dd>
+            <span>{{ accessRule()!.startDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="acsApp.accessRule.endDate">End Date</span></dt>
+          <dd>
+            <span>{{ accessRule()!.endDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="acsApp.accessRule.notes">Notes</span></dt>
+          <dd>
+            <span>{{ accessRule()!.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="acsApp.accessRule.employee">Employee</span></dt>
+          <dd>
+            @if (accessRule()!.employee) {
+              <div>
+                <a [routerLink]="['/employee', accessRule()!.employee?.id, 'view']">{{ accessRule()!.employee?.email }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="acsApp.accessRule.room">Room</span></dt>
+          <dd>
+            @if (accessRule()!.room) {
+              <div>
+                <a [routerLink]="['/room', accessRule()!.room?.id, 'view']">{{ accessRule()!.room?.roomName }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/access-rule', accessRule()!.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

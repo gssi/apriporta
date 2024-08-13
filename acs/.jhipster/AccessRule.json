@@ -1,0 +1,41 @@
+{
+  "annotations": {
+    "changelogDate": "20240808132839"
+  },
+  "applications": "*",
+  "documentation": "The Employee entity.",
+  "fields": [
+    {
+      "fieldName": "startDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "notes",
+      "fieldType": "String"
+    }
+  ],
+  "name": "AccessRule",
+  "relationships": [
+    {
+      "otherEntityField": "email",
+      "otherEntityName": "employee",
+      "otherEntityRelationshipName": "rule",
+      "relationshipName": "employee",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "roomName",
+      "otherEntityName": "room",
+      "otherEntityRelationshipName": "rule",
+      "relationshipName": "room",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no"
+}
