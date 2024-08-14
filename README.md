@@ -34,7 +34,9 @@ create service at: /lib/systemd/system/acs.service
 # Shell script for executing webserver: /home/administrator/myservices.sh      
 
 #!/bin/bash
+
 cd /home/administrator/apriporta/acs
+
 sudo ./mvnw
 
 # reboot the device
