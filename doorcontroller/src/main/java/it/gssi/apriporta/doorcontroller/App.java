@@ -1,5 +1,5 @@
 package it.gssi.apriporta.doorcontroller;
-
+ 
 import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
@@ -9,16 +9,14 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 
-import org.apache.groovy.parser.antlr4.GroovyParser.ThisFormalParameterContext;
-
 import com.tinkerforge.BrickletIndustrialQuadRelayV2;
 import com.tinkerforge.BrickletLCD128x64;
 import com.tinkerforge.BrickletNFC;
 import com.tinkerforge.BrickletPiezoSpeakerV2;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.TinkerforgeException;
-
-import groovyjarjarantlr4.v4.parse.ANTLRParser.finallyClause_return;
+import com.tinkerforge.BrickletLCD128x64.GUIButtonPressedListener;
+import com.tinkerforge.BrickletNFC.ReaderStateChangedListener;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -66,7 +64,7 @@ public class App
         nfc.addReaderStateChangedListener(new BrickletNFC.ReaderStateChangedListener() {
             public void readerStateChanged(int state, boolean idle) {
                 if(state == BrickletNFC.READER_STATE_REQUEST_TAG_ID_READY) {
-                    try {
+                    try { 
                         int i = 0;
                         StringBuilder tag = new StringBuilder();
                         BrickletNFC.ReaderGetTagID ret = nfc.readerGetTagID();
