@@ -46,6 +46,8 @@ public enum ApplicationProperties {
     public String getToken() {
         return properties.getProperty("app.token");
     }
-    
+    public int getVolume() {
+    	  return Integer.parseInt(properties.getProperty("app.volume"));
+    }
 }
 

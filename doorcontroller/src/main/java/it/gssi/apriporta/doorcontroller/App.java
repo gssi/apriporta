@@ -33,6 +33,7 @@ public class App
 
     private static final String NFCUID = ApplicationProperties.INSTANCE.getNFCUid();
     private static final String speakerUID = ApplicationProperties.INSTANCE.speakerUID();
+    private static final int volume = ApplicationProperties.INSTANCE.getVolume();
     private static final String relayUID = ApplicationProperties.INSTANCE.relayUID();
     private static final String lcdUID = ApplicationProperties.INSTANCE.lcdUID();
 
@@ -52,6 +53,13 @@ public class App
         final BrickletLCD128x64 lcd= new BrickletLCD128x64(lcdUID, ipcon); // Create device object
 
         ipcon.connect(HOST, PORT); // Connect to brickd
+       
+        ps.setBeep(1000, volume, 200);
+        Thread.sleep(200);
+        ps.setBeep(1000, volume, 200);
+        Thread.sleep(200);
+        ps.setBeep(1000, volume, 200);
+       
         // Don't use device before ipcon is connected
         displayDesign(lcd,iqr);
         // Add reader state changed listener
@@ -80,12 +88,12 @@ public class App
                             
                             iqr.setValue(new boolean[]{false, false, false, false});
                             
-                        	ps.setBeep(3200, 0, 500);
+                        	ps.setBeep(3200, volume, 500);
                         	//lcd.clearDisplay();
                         	displayDesign(lcd,iqr);
                         	
                         }else {
-                        	ps.setBeep(100, 0, 500);
+                        	ps.setBeep(100, volume, 500);
                         	lcd.clearDisplay();
                         	lcd.writeLine(5, 0, tag.toString());
                         	
@@ -128,7 +136,7 @@ public class App
 		    	   try {
 		    		//System.out.println("Response JSON: " + response.asString()); // Verify that the status code is 200.
 				       
-		    		int user_id = jsonPathEvaluator.get("id");
+		    		int user_id = jsonPathEvaluator.get("employee.id");
 		    	 
 		    	   
 		    	   RestAssured.baseURI = baseAPIurl+"/api/access-rules?eagerload=true";
@@ -148,10 +156,11 @@ public class App
 			        
 			        if(statusCode2==200) {
 			        	jsonPathEvaluator = response2.jsonPath();
+			        	//System.out.println("userid: "+user_id+", room_id:"+room_id);
 			        	ArrayList<Date> endDates = (jsonPathEvaluator.get("findAll { a -> a.employee.id == "+user_id+" && a.room.id == "+room_id+" }.endDate"));
 			        	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			        	 Iterator iterator= endDates.iterator();
-			        	
+			       
 			        	  while(iterator.hasNext()) {
 			        		  Date d= sdf.parse(iterator.next().toString());
 			        		  //active dates retrieved
@@ -218,7 +227,7 @@ public class App
         lcd.removeAllGUI();
 
         // Add GUI elements: Button, Slider and Graph with 60 data points
-        lcd.setGUIButton(0, 0, 0, 60, 20, "Open");
+        lcd.setGUIButton(0, 0, 0, 100, 20, "Click to Open");
         
 
         // Set period for GUI button pressed callback to 0.1s (100ms)
