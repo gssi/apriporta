@@ -134,7 +134,7 @@ public class App
 		       if(statusCode==200) {
 		    	   JsonPath jsonPathEvaluator = response.jsonPath();
 		    	   try {
-		    		System.out.println("Response JSON: " + response.asString()); // Verify that the status code is 200.
+		    		//System.out.println("Response JSON: " + response.asString()); // Verify that the status code is 200.
 				       
 		    		int user_id = jsonPathEvaluator.get("employee.id");
 		    	 
@@ -150,13 +150,13 @@ public class App
 			                .response();
 			      
 			        // Print the JSON content of the response
-			        System.out.println("Response JSON: " + response2.asString()); // Verify that the status code is 200.
+			        //System.out.println("Response JSON: " + response2.asString()); // Verify that the status code is 200.
 			        // Validate that the status code is 200
 			        int statusCode2 = response2.getStatusCode();
 			        
 			        if(statusCode2==200) {
 			        	jsonPathEvaluator = response2.jsonPath();
-			        	System.out.println("userid: "+user_id+", room_id:"+room_id);
+			        	//System.out.println("userid: "+user_id+", room_id:"+room_id);
 			        	ArrayList<Date> endDates = (jsonPathEvaluator.get("findAll { a -> a.employee.id == "+user_id+" && a.room.id == "+room_id+" }.endDate"));
 			        	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			        	 Iterator iterator= endDates.iterator();
