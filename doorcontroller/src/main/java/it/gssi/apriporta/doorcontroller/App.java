@@ -134,7 +134,7 @@ public class App
 		       if(statusCode==200) {
 		    	   JsonPath jsonPathEvaluator = response.jsonPath();
 		    	   try {
-		    		//System.out.println("Response JSON: " + response.asString()); // Verify that the status code is 200.
+		    		System.out.println("Response JSON: " + response.asString()); // Verify that the status code is 200.
 				       
 		    		int user_id = jsonPathEvaluator.get("employee.id");
 		    	 
@@ -150,7 +150,7 @@ public class App
 			                .response();
 			      
 			        // Print the JSON content of the response
-			        //System.out.println("Response JSON: " + response2.asString()); // Verify that the status code is 200.
+			        System.out.println("Response JSON: " + response2.asString()); // Verify that the status code is 200.
 			        // Validate that the status code is 200
 			        int statusCode2 = response2.getStatusCode();
 			        
