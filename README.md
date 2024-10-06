@@ -1,3 +1,6 @@
+sudo apt install default-jdk
+sudo apt install maven
+
 We need 2 services running on the rpi. 
 
 # Doorcontroller service
@@ -17,6 +20,14 @@ WantedBy=multi-user.target
 
 then enable it: sudo systemctl enable doorcontroller.service
 
+# Shell script for executing webserver: /home/administrator/myservices.sh      
+
+#!/bin/bash
+
+cd /home/administrator/apriporta/acs
+
+sudo ./mvnw
+
 # ACS service
 create service at: /lib/systemd/system/acs.service
 
@@ -31,12 +42,8 @@ create service at: /lib/systemd/system/acs.service
  [Install]
  WantedBy=multi-user.target
 
-# Shell script for executing webserver: /home/administrator/myservices.sh      
+then enable it: sudo systemctl enable acs.service
 
-#!/bin/bash
-
-cd /home/administrator/apriporta/acs
-
-sudo ./mvnw
 
 # reboot the device
+The ACS web system is accessible at HTTP://ip-addr:8080
