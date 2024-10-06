@@ -47,6 +47,8 @@ create service at: /lib/systemd/system/acs.service
 
 then enable it: sudo systemctl enable acs.service
 
+create database ACS from commandline. 
+
 change root password and jdbc connector URL.
 
 # reboot the device
