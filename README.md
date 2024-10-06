@@ -49,6 +49,8 @@ then enable it: sudo systemctl enable acs.service
 
 create database ACS from commandline. 
 
+import structure and data with script: https://github.com/gssi/apriporta/blob/main/acs/acs.sql
+
 change root password and jdbc connector URL.
 
 # reboot the device
