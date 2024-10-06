@@ -1,5 +1,8 @@
 sudo apt install default-jdk
 sudo apt install maven
+sudo apt install mariadb-server
+
+refer to this guide: https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-ubuntu-20-04
 
 We need 2 services running on the rpi. 
 
@@ -44,6 +47,7 @@ create service at: /lib/systemd/system/acs.service
 
 then enable it: sudo systemctl enable acs.service
 
+change root password and jdbc connector URL.
 
 # reboot the device
 The ACS web system is accessible at HTTP://ip-addr:8080
